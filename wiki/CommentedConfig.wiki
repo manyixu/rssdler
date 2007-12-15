@@ -1,3 +1,5 @@
+﻿#labels Phase-Deploy
+
 A commented config file for RSSDler
 {{{
 # lines (like this one) starting with # are comments and will be ignored by the config parser

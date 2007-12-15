@@ -1,3 +1,4 @@
+﻿#labels Phase-Deploy
 A list of "postDownloadFunctions" for [http://code.google.com/p/rssdler/ RSSDler]. Feel free to edit this page, but please keep the list with the same formatting (link to function as function name - description - version tested with). 
 
 === ifTorrent ===

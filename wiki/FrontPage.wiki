@@ -1,0 +1,20 @@
+﻿#labels Featured,Phase-Deploy
+= [http://code.google.com/p/rssdler/ RSSDler] =
+== A Utility in [http://python.org/ Python] for [http://en.wikipedia.org/wiki/Broadcatching Broadcatching] RSS feeds with rTorrent ==
+Actually, the program can also be used for podcasts (though it looks toward the <link> as opposed to the <enclosure> attribute) as well, these are, from what I've seen, typically identical, at least insofar as feedparser presents them. 
+
+Written by lostnihilist: lostnihilist _at_ gmail _dot_ com
+
+  * You can find the archive of [http://code.google.com/p/rssdler/downloads/list?can=4&q=&colspec=Filename+Summary+Uploaded+Size+DownloadCount older versions] 
+  * Newest, stable version: [http://rssdler.googlecode.com/files/rssdler031.py rssdler-0.3.1.py]
+
+You can also find the [http://rssdler.googlecode.com/files/rssdlerDev.py development version] for testing or using new features or trying out new bugfixes. This may or may not run and may or may not be stable. There are times when it contains bugfixes for the latest version, and times when it is undergoing feature development and may be subject to crashes. The changelog will note the changes in the development version, but those changes may be buggy and/or incomplete. Feel free to test this version and email me the bug reports you have.
+
+And by popular request: 
+  * a CommentedConfig file
+  * As well as sample PostDownloadFunctions
+  * Also, now an [http://rssdler.googlecode.com/files/rssdler.sh init script]. Find instruction at the top of the script. Only works for versions >= 0.3.2, which is now in development.
+
+   You'll want to set downloadDir (see below) to the same directory as rtorrent's watch directory. Of course, you can download different rss feeds to different directories with the directory option for each thread. 
+
+   PLEASE READ THE [http://code.google.com/p/rssdler/wiki/Changelog CHANGELOG] BETWEEN UPGRADES. Settings may change that require some (minor) user intervention. These will be detailed between releases (as well as more esoteric things). 
