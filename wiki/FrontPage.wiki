@@ -15,6 +15,6 @@ And by popular request:
   * As well as sample [http://rssdler.googlecode.com/svn/trunk/userFunctions.py postDownloadFunctions]
   * Also, now an [http://rssdler.googlecode.com/files/rssdler.sh init script]. Find instruction at the top of the script. Only works for versions >= 0.3.2, which is now in development.
 
-   You'll want to set downloadDir (see below) to the same directory as rtorrent's watch directory. Of course, you can download different rss feeds to different directories with the directory option for each thread. 
+You'll want to set downloadDir (see below) to the same directory as rtorrent's watch directory. Of course, you can download different rss feeds to different directories with the directory option for each thread. 
 
-   PLEASE READ THE ChangeLog BETWEEN UPGRADES. Settings may change that require some (minor) user intervention. These will be detailed between releases (as well as more esoteric things). 
+PLEASE READ THE ChangeLog BETWEEN UPGRADES. Settings may change that require some (minor) user intervention. These will be detailed between releases (as well as more esoteric things). 
