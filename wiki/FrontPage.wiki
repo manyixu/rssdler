@@ -8,7 +8,7 @@ Written by lostnihilist: lostnihilist _at_ gmail _dot_ com
   * You can find the archive of [http://code.google.com/p/rssdler/downloads/list?can=4&q=&colspec=Filename+Summary+Uploaded+Size+DownloadCount older versions] 
   * Newest, stable version: [http://rssdler.googlecode.com/files/rssdler031.py rssdler-0.3.1.py]
 
-You can also find the [http://rssdler.googlecode.com/files/rssdlerDev.py development version] for testing or using new features or trying out new bugfixes. This may or may not run and may or may not be stable. There are times when it contains bugfixes for the latest version, and times when it is undergoing feature development and may be subject to crashes. The changelog will note the changes in the development version, but those changes may be buggy and/or incomplete. Feel free to test this version and email me the bug reports you have.
+You can also find the [http://rssdler.googlecode.com/svn/trunk/rssdler.py development version] for testing or using new features or trying out new bugfixes. This may or may not run and may or may not be stable. There are times when it contains bugfixes for the latest version, and times when it is undergoing feature development and may be subject to crashes. The changelog will note the changes in the development version, but those changes may be buggy and/or incomplete. Feel free to test this version and email me the bug reports you have.
 
 And by popular request: 
   * a CommentedConfig file
