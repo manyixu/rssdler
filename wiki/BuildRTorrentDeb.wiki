@@ -3,6 +3,8 @@
 
 This page describes how to take a tarball of the libTorrent and rTorrent source, and make debian packages that should install well on the platform.
 
+You may be required to install the debian build tools, and the build process may complain about missing packages. Simply sudo apt-get install those as you get complaints.
+
   # Create a workspace: mkdir buildrtorrent && cd buildrtorrent
   # Get the tarballs: wget urltolibtorrent && wget urltortorrent
   # Unpack them: tar xzf lib/rtorrent_version.tar.gz
