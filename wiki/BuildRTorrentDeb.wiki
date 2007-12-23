@@ -10,9 +10,11 @@ You may be required to install the debian build tools, and the build process may
   # Unpack them: tar xzf lib/rtorrent_version.tar.gz
   # Get the most recent patches you can from the debian maintainer: http://debian.ghostbar.ath.cx/ (these are the lib/rtorrent_version.diff.gz files)
   # Apply the patch: cd libtorrent_version && gunzip -c ../libtorrent_version.diff.gz | patch -p1
-  # Change the version number: dch -i
+  # Change the version number: dch -i [1]
   # Make the build rules executable: chmod +x debian/rules
   # Build the packages: dpkg-buildpackage -rfakeroot
   # Install the packages: cd ../ && sudo dpkg -i libtorrent10_version.deb libtorrent-dev_version.deb
   # Start over at step 5, but for rtorrent instead of libtorrent
   # Cleanup the workspace: cd ../ && rm -r buildrtorrent
+
+[1] Instead of, for example 0.11.9-1 like the maintainer likes to do, I use -0, in case a more recent package comes into my source, I can use the official packages instead of mine.
