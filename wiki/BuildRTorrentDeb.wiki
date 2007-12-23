@@ -15,6 +15,6 @@ You may be required to install the debian build tools, and the build process may
   # Build the packages: dpkg-buildpackage -rfakeroot
   # Install the packages: cd ../ && sudo dpkg -i libtorrent10_version.deb libtorrent-dev_version.deb
   # Start over at step 5, but for rtorrent instead of libtorrent
-  # Cleanup the workspace: cd ../ && rm -r buildrtorrent
+  # Cleanup the workspace (move the .debs if you want to keep them for later): cd ../ && rm -r buildrtorrent
 
 [1] Instead of, for example 0.11.9-1 like the maintainer likes to do, I use -0, in case a more recent package comes into my source, I can use the official packages instead of mine.
