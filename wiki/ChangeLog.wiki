@@ -2,7 +2,14 @@
 === Change Log === 
 
 0.3.2
-    2008.01.01
+  2008.01.01
+  * removed eric project file (rssdler.e3p)
+  * make sure that rss entry NOT already stored previously (userFunctions _saveFeed)
+  * rearranged functions for easier maintenance
+  * trust filename from http header over url extraction (getFilenameFromHTTP)
+  * added checks for os type when entering daemon mode.
+  * some docstring cleanup (some)
+  * added downloadxFunction option. overrides postDownloadFunction, but called the same way
   * added postScanFunction option to ThreadLink, Config
   * made callUserFunctions take a tuple of args instead of precise positional to accommodate postScanFunction
   * made callUserFunctions check for existence of functionName before calling
