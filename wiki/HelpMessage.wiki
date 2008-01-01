@@ -1,12 +1,12 @@
 #labels Featured,Phase-Deploy
 Note: Apologies for the highlighting. Get on Google to allow us [http://code.google.com/p/support/issues/detail?id=44 to disable syntax highlighting].
-=== Help Message === 
+=== Help Message ===
 {{{
 RSSDler is a Python based program to automatically grab the link elements of an rss feed, aka an RSS broadcatcher. It
     happens to work just fine for grabbing RSS feeds of torrents, so called torrent broadcatching. It may also used
     with podcasts and such. Though designed with an eye toward rtorrent, it should work with any torrenting program
     that can read torrent files written to a directory. It does not explicitly interface with rtorrent in anyway and
-    therefore has no dependency on it. You can find the webpage here: http://code.google.com/p/rssdler/
+    therefore has no dependency on it. You can find the webpage here: http://libtorrent.rakshasa.no/wiki/UtilsRSSDler
 
 Effort has been put into keeping the program from crashing from random errors like bad links and such. However, some of
     the exceptions caught are too broad and keep users from knowing what is wrong with their configuration, though this
@@ -16,8 +16,8 @@ Effort has been put into keeping the program from crashing from random errors li
     options, which is probably necessary to broadcatch in an efficient manner. If you do not know what and/or how to
     use regular expressions, google is your friend. There are literally dozens of tutorials and documentation on the
     subject with a range of difficulty levels from beginner to expert. If you are having problems that you believe are
-    RSSDler's fault, feel free to email me at the below address. Please be sure to include as much information as you
-    can.
+    RSSDler's fault, post an issue at: http://code.google.com/p/rssdler/issues/list or post a message on:
+    http://groups.google.com/group/rssdler. Please be sure to include as much information as you can.
 
 Command Line Options:
     --config/-c can be used with all the options except --comment-config, --help, and --set-default-config. Otherwise,
@@ -183,10 +183,15 @@ Thread options:
     regExFalseOptions: [Optional] A string option. Default None. Options (like re.IGNORECASE) to go along with
         regExFalse when compiling the regex object
     postDownloadFunction: [Optional] A string option. Default None. The name of a function, stored in userFunctions.py
-        found in the current working directory. Any changes to this requires a restart of RSSDler. calls the named
-        function in userFunctions with arguments: directory, filename, rssItemNode, retrievedLink, downloadDict,
-        threadName. Exception handling is up to the function, no exceptions are caught. Check docstrings (or source) of
-        userFunctHandling and callUserFunction to see reserved words/access to RSSDler functions/classes/methods.
+        found in the current working directory. Any changes to this requires a restart of RSSDler. Calls the named
+        function in userFunctions after a successful download with arguments: directory, filename, rssItemNode,
+        retrievedLink, downloadDict, threadName. Exception handling is up to the function, no exceptions are caught.
+        Check docstrings (or source) of userFunctHandling and callUserFunction to see reserved words/access to RSSDler
+        functions/classes/methods.
+    postScanFunction: [Optional] A string option. Default None. The name of a function, stored in userFunctions.py. Any
+        changes to this requires a restart of RSSDler. Calls the named function after a scan of a feed with arguments,
+        page, ppage, retrievedLink, and threadName. Exception Handling is up to the function, no exceptions are caught.
+        Check docstrings of userFunctHandling and callUserFunctions for more information.
     The following options are ignored if not set (obviously). But once set, they change the behavior of regExTrue (RET)
         and regExFalse (REF). Without specifying these options, if something matches RET and doesn't match REF, it is
         downloaded, i.e. RET and REF constitute sufficient conditions to download a file. Once these are specified, RET
@@ -206,6 +211,8 @@ Thread options:
         Requires a corresponding download<x> argument.
     download<x>Dir. [Optional] A String option. Default None. If specified, the first of the download<x> tuples to
         match up with the download name, downloads the file to the directory specified here. Full path is recommended.
+    download<x>Function. [Optional] A String option. Default None. just like postDownloadFunction, but will override it
+        if specified.
     download<x>MinSize. [Optional]. An Integer option. Default None. Analogous to minSize.
     download<x>MaxSize. [Optional]. An integer option. Default None. Analogous to maxSize.
     scanMins [Optional]. An integer option. Default 0. Sets the MINIMUM interval at which to scan the thread. If global
@@ -228,6 +235,17 @@ A Netscape cookies file must have the proper header that looks like this:
 
 cookiedata ....
 
-RSSDler - RSS Broadcatcher
+Copyright (c) 2001-2006 Python Software Foundation.
+All Rights Reserved.
 
+Copyright (c) 2000 BeOpen.com.
+All Rights Reserved.
+
+Copyright (c) 1995-2001 Corporation for National Research Initiatives.
+All Rights Reserved.
+
+Copyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.
+All Rights Reserved.
+
+Contact:  lostnihilist <lostnihilist _at_ gmail _dot_ com> or "lostnihilist" on #libtorrent@irc.worldforge.org
 }}}

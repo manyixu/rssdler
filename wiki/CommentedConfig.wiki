@@ -1,5 +1,5 @@
 #labels Phase-Deploy
-A commented config file for RSSDler
+=== Help Message ===
 {{{
 # lines (like this one) starting with # are comments and will be ignored by the config parser
 # the only required section (though the program won't do much without others)
@@ -10,8 +10,7 @@ A commented config file for RSSDler
 # download files to this directory. Defaults to the working directory.
 downloadDir = /home/user/downloads
 
-# makes this the 'working directory' of RSSDler. 
-# anytime you specify a filename without an absolute path, it will be relative to this 
+# makes this the 'working directory' of RSSDler. anytime you specify a filename without an absolute path, it will be relative to this 
 workingDir = /home/user/.rssdler
 
 # if a file is smaller than this, it will not be downloaded. if filesize cannot be determined, this is ignored. 
@@ -97,8 +96,8 @@ regExTrue = \d[^\d]+\d
 # because those are undesirable formats, but we want to make sure to not match
 # a name that may have those as a substring e.g. enrgy 
 # (ok, not a great example, come up with something better and I'll include it)
-# REF from now on (\b indicates a word boundary)
-regExFalse = (\bnrg\b|\bccd\b)
+# REF from now on ( indicates a word boundary)
+regExFalse = (nrg|ccd)
 # the default value, which means it will be ignored
 # regExFalse = None
 
@@ -122,7 +121,7 @@ download1True = False
 # to be clear, download<x>False is a mixed type option, taking both True, False for dealing with the global REF 
 # or a string (like here) to specify what amounts to a 'localized REF', which effectively says False to the global REF
 # while at the same time specifying the local REF
-download1False = \bnrg\b
+download1False = nrg
 
 # we don't want to download things like howto, md5 files, etc, so we can set a minSize (MB)
 # this overrides the global/thread minSize when not set to None
