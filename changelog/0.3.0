@@ -1,19 +1,35 @@
 2007.10.19
-  * changed how verbose and log work. Now integer, aka no longer Boolean, options! Change config to comply. Now, support for excessive verbosity for easy(er?) problem identification
-  * a narrated and commented sample config is now available with most options explained. available with the --comment-config cli option
-  * all output now timestamped (down to the second). 
-  * gave userFunctions access to many rssdler functions, classes, variables, and instantiations. use wisely. Also, changed the arguments sent to the function called. See documentation for details. EXCEPTION HANDLING IS THE RESPONSIBILITY OF THE FUNCTION BEING CALLED
-  * list failed, saved, purge-saved, purge-failed. (removes -f, --failed to remove ambiguity) (cli options)
-  * unquoted urls should now properly be detected and quoted, even if containing unquoted % characters
-  * all log/status/errorMsg calls now logStatusMsg w/ level indicator
-  * helpMessage maintenance
-  * more unicodification of strings
-  * select cookie format (MSIECookieJar (mechanize only), LWPCookieJar, MozillaCookieJar )
-  * fix xml.dom.ext import error on installations that don't have xml.dom.ext available, set PrettyPrint to _write (MakeRss)
-  * make a 'write data' function for downloaded data. Should not clobber pre-existing files. Unlinks failed writes. Only used for downloaded data, not logs, etc.
-  * unescapes xml entity references in the <link> (feedparser bug, should be updated. )
-  * sleep between http fetches (configurable, default is not to sleep)
-  * cli opton to reset default config file (advised only for single user systems/installs)
-  * put version number in saveFile (for changes to failedTups)
-  * changes to how failed/download<x> items are stored internally (should be easier to edit)
-  * config.save() will not write out options that are set to their default values (less clutter)
+    * changed how verbose and log work. Now integer, aka no longer Boolean,
+        options! Change config to comply. Now, support for excessive verbosity
+        for easy(er?) problem identification
+    * a narrated and commented sample config is now available with most options
+        explained. available with the --comment-config cli option
+    * all output now timestamped (down to the second). 
+    * gave userFunctions access to many rssdler functions, classes, variables,
+        and instantiations. use wisely. Also, changed the arguments sent to the
+        function called. See documentation for details. EXCEPTION HANDLING IS
+        THE RESPONSIBILITY OF THE FUNCTION BEING CALLED
+    * list failed, saved, purge-saved, purge-failed. (removes -f, --failed to
+        remove ambiguity) (cli options)
+    * unquoted urls should now properly be detected and quoted, even if
+        containing unquoted % characters
+    * all log/status/errorMsg calls now logStatusMsg w/ level indicator
+    * helpMessage maintenance
+    * more unicodification of strings
+    * select cookie format (MSIECookieJar (mechanize only), LWPCookieJar,
+        MozillaCookieJar )
+    * fix xml.dom.ext import error on installations that don't have xml.dom.ext
+        available, set PrettyPrint to _write (MakeRss)
+    * make a 'write data' function for downloaded data. Should not clobber
+        pre-existing files. Unlinks failed writes. Only used for downloaded
+        data, not logs, etc.
+    * unescapes xml entity references in the <link> (feedparser bug, should be
+        updated. )
+    * sleep between http fetches (configurable, default is not to sleep)
+    * cli opton to reset default config file (advised only for single user
+        systems/installs)
+    * put version number in saveFile (for changes to failedTups)
+    * changes to how failed/download<x> items are stored internally (should be
+        easier to edit)
+    * config.save() will not write out options that are set to their default
+        values (less clutter)

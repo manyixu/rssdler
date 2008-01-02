@@ -1,12 +1,26 @@
 2007.10.01
-  * moved kill action outside optparse loop so that config file location can be more reliably recognized
-  * improved exception handling, notifcation, and logging of errors. Hopefully this will allow users to more easily identify problems they are having and to fix their setup or report bugs as necessary.
-  * removed dependency on mechanize, though that dependency is still default. To get rid of it, set urllib = True in global options to make use of urllib2. (new Function: urllib2RetrievePage)
-  * added error option to global. 0=Suppress all error messages. 1=Print error to stderr. 2=Log error to logfile. 3=2+1 aka log and stderr. . . Default is 1(status)
-  * reduced mechRetrievePage to only fetch urls to reduce complexity of function.
-  * removed support for 'rss' and 'checkTime' options. Check out the analogous updated options (rssFeed and related, checkTimeDay and related)
-  * removed eval statements
-  * regExTrueOptions/regExFalseOptions now apply to download<x> and download<x>False if set.
-  * added -f/--failed to clear failed downloads from the queue so that you can clear them out if they are repeatedly trying to download and not working and you just don't care anymore.
-  * attempt at improving filename/filetype guessing (getFilenameFromHTTP)
-  * try to determine terminal width, adjust text output for more readable messages
+    * moved kill action outside optparse loop so that config file location can
+        be more reliably recognized
+    * improved exception handling, notifcation, and logging of errors.
+        Hopefully this will allow users to more easily identify problems they
+        are having and to fix their setup or report bugs as necessary.
+    * removed dependency on mechanize, though that dependency is still default.
+        To get rid of it, set urllib = True in global options to make use of
+        urllib2. (new Function: urllib2RetrievePage)
+    * added error option to global. 0=Suppress all error messages. 1=Print
+        error to stderr. 2=Log error to logfile. 3=2+1 aka log and stderr. . .
+        Default is 1(status)
+    * reduced mechRetrievePage to only fetch urls to reduce complexity of
+        function.
+    * removed support for 'rss' and 'checkTime' options. Check out the
+        analogous updated options (rssFeed and related, checkTimeDay and
+        related)
+    * removed eval statements
+    * regExTrueOptions/regExFalseOptions now apply to download<x> and
+        download<x>False if set.
+    * added -f/--failed to clear failed downloads from the queue so that you
+        can clear them out if they are repeatedly trying to download and not
+        working and you just don't care anymore.
+    * attempt at improving filename/filetype guessing (getFilenameFromHTTP)
+    * try to determine terminal width, adjust text output for more readable
+        messages
