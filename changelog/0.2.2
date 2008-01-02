@@ -1,0 +1,11 @@
+2007.09.19
+  * new log function for easier logging of errors (will begin to add error information to downloads.log)
+  * open text files as utf-8 for reading/writing/appending
+  * convert url to ISO-8859-1 to prevent unicode errors in httplib from cropping up (mechRetrievePage)
+  * work on proper quoting/encoding of invalid urls (mechRetrievePage)
+  * removed call to Config().save. aka stops clobbering the config file. No changes to config are made during run time, except for setting defaults, so this should be safe. save still exists as a method of Config(), if you want to make use of it in a postDownloadFunction. Allows for dynamic working directory, unless it is explicitly set in the config file. (run)
+  * removed missed check for the former 10 minute scan time minimum (run)
+  * fixed (I think) the utfWriter/sys.stdout conflict in status()/global variables
+  * removed the requirement for cookies. If a file is specified (new default is None), then it will fail if it can't find a properly Netscape formatted cookie file. If None is specified, it will exclude the cookie jar from the url opener (mechRetrievePage)
+  * set the shabang to /usr/bin/env python
+  * reworked filename guessing from url. Now parses the url, takes the path, splits off the last element after /, and unquotes that. Still tries to grab from HTTP headers first. (getFilenameFromHTTP). If you know of a standarized method for getting the filename from the url, please send it to me.

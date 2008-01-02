@@ -1,0 +1,12 @@
+2007.10.28
+  * verbosity/log level 3 is much less wordy, only adds what is downloaded. To get what used to be level 3 verbosity, use level 4. This is also about equivalent to what verbose = True was pre-0.3.0.
+  * symlinks to files messes with the import of modules that are supposed to be in the current working directory. We now prepend '' to sys.path if it is not there to fix this. (global)
+  * sample postDownloadFunction, checking to make sure we have valid torrent data, and if not removes from saved list, adds to failed, and if rss is set, clears it from the rss feed. No, this does not go into the main program because it the main program is not meant only for torrents.
+  * sets verbose = 0 when entering daemon mode (prevents crash since stdout/stderr are gone). This means Config.save invoked in a postDownloadFunction when run with -d will rewrite this option as 0 (run).
+  * fixes bug in SaveProcessor.save/load with missing version
+  * check for key content-length before attempting to access (checkFileSize)
+  * attempts to get console width on multiple platforms (ReFormatString)
+  * more unicode fixes
+  * more fixes of quoting urls 
+  * rssLength = 0 now means to never truncate the download list, instead of storing nothing like before. (MakeRss)
+  * fixed error: "TypeError: returnTuple() takes no arguments (1 given)" that would crop up in run. (saveProccessor/FailedItem)

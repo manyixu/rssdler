@@ -1,0 +1,9 @@
+2007.09.11
+  * UPGRADE NOTE: make sure your failedDownloads list is empty in your saved state. if unsure, delete saved state. However, this may cause torrents to be redownloaded
+  * Added support for individual regex's for individual downloads. (see download<x>(false||true) ). Also added support for individual download directories
+  * Changed makeRss class. New items should end up on top of the xml file, whereas before they were appended to the end. This will make the feed drop some items in the wrong order, but will be self correcting and should not change again. some behavior of the class functions/methods have changed. 
+  * ConfigParser.save() changed to make the config be saved in sane (approximately alphabetical) order, with [global] on top. This bypasses the normal save method, and could be broken someplace.
+  * No more minimum minutes on scanMins. Up to user to have sane setting. will respect <ttl></ttl>. If site wants a min scan time, they should set it programmatically.
+  * checks for directory existence. Will try to create it if it does not exist. if this fails, will raise an exception and exit
+  * sharedData now truncated to a size of 1500 after it reaches over 2000 characters. Just to keep its size reasonable.
+  * fixed defaults for persistenceClasses (e.g. maxSize)

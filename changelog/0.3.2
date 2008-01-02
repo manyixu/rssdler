@@ -1,0 +1,36 @@
+2008.01.01
+  * removed eric project file (rssdler.e3p)
+  * make sure that rss entry NOT already stored previously (userFunctions _saveFeed)
+  * rearranged functions for easier maintenance
+  * trust filename from http header over url extraction (getFilenameFromHTTP)
+  * added checks for os type when entering daemon mode.
+  * some docstring cleanup (some)
+  * added downloadxFunction option. overrides postDownloadFunction, but called the same way
+  * added postScanFunction option to ThreadLink, Config
+  * made callUserFunctions take a tuple of args (*args) instead of precise positional to accommodate postScanFunction
+  * made callUserFunctions check for existence of functionName before calling
+  * import httplib (implicitly imported before, now explicitly. httplib exceptions handlers now work)
+  * store raw feed for passing to postScanFunction
+  * added sample postScanFunction: saveFeed
+  * SharedData.scanoutput now a list of tuples length 2 (error level, message), code changes in main, getSharedData, logStatusMessage to reflect
+  * made init script for debian based distros
+  * global umask option (reads as decimal NOT OCTAL, read documentation for details and before using (i'm serious))
+  * got proper signal handling. Exit the program cleanly (like -k.). aka: let ctrl-c (somewhat) cleanly exit the program.
+  * added global option maxLogLength. the internal message log can grow rather large, make a setting to allow truncating at a certain number of lines to keep memory usage after long run times under control.
+  * ReFormatString got called with no config, when config should indicate there is no stdout/stderr (daemon mode) and tries to print. this causes a crash. Now notices daemon mode and fails to print anything.
+  * scanMins for threads (see documentation on implementation notes)
+  * MakeRss methods changed slightly, storage of items as dictionaries until .close(). (This means you should redownload the userFunctions.py if you were using mine, as there had to be some minor changes.) (MakeRss)
+  * removed dependency on saxutils for xml(Un)Escape
+  * returned properly from failed rss feed retrieval
+  * improved memory management when file is not a torrent (probably best with mechanize, helps deal with video podcasts or large audio podcasts better).
+  * removed full dependency on mechanize. Config parser will try to import mechanize if urllib = False, set urllib = True if it fails.
+  * removed full dependency on bencode.bdecode. made bdecode function. will still try to import the others, but if they are not there, will fall back to this one
+  * xml.dom.ext.PrettyPrint was causing problems on some characters. RSSDler no longer uses it. (MakeRss)
+  * make failedDown respect rss minScanTime
+  * support 'enclosure' attribute (first tries to get first enclosed media element of such feeds, then tries normal link element) (rssparse)
+  * catch EOFError on SaveProcessor.load error, notify user that new saveFile will be made on error.
+  * no longer raise Warning on failed size grab, just return None (getFileSize)
+  * changed daemonInfo format to be just the pid of rssdler ; changed --kill running to accomdate. Allows for use of start-stop-daemon in init script
+  * removed logStatusMsg entries before we change directory to working directory/set umask.
+  * try to prevent sending same message repeatedly (status, getSharedData, logStatusMsg, only for errors)
+  * added tilde to percentQuoteDict (especially helpful for feedburner feeds)
