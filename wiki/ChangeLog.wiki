@@ -1,4 +1,5 @@
 #labels Phase-Deploy
+Due to formatting bugs (e.g. no display of the star character), we'll have to deal with leaving the text of the changelog (poorly formatted) at the below links. Will work on improving the display in the near future.
 === Change Log === 
 
 [http://rssdler.googlecode.com/svn/changelog/0.3.2 0.3.2]
