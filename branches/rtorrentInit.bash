@@ -118,6 +118,9 @@ d_start() {
 d_stop() {
   for (( i=0 ; i < ${#config[@]} ; i++ )) ; do
 	session=$(getsession "${config[i]}")
+	if ! [ -s ${session}/rtorrent.lock ] ; then
+		return
+	fi
 	pid=$(cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g")
 	# make sure the pid doesn't belong to another process
 	if ps -A | grep -sq ${pid}.*rtorrent ; then

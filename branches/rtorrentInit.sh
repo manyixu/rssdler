@@ -94,6 +94,9 @@ d_start() {
 
 d_stop() {
 	session=`getsession "$config"`
+	if ! [ -s ${session}/rtorrent.lock ] ; then
+		return
+	fi
 	pid=`cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g"`
 	if ps -A | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
 		kill -s INT ${pid}
