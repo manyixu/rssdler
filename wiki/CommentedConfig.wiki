@@ -1,4 +1,4 @@
-#labels Phase-Deploy
+﻿#labels Phase-Deploy
 === Help Message ===
 {{{
 # lines (like this one) starting with # are comments and will be ignored by the config parser
@@ -96,8 +96,8 @@ regExTrue = \d[^\d]+\d
 # because those are undesirable formats, but we want to make sure to not match
 # a name that may have those as a substring e.g. enrgy 
 # (ok, not a great example, come up with something better and I'll include it)
-# REF from now on ( indicates a word boundary)
-regExFalse = (nrg|ccd)
+# REF from now on (\b indicates a word boundary)
+regExFalse = (\bnrg\b|\bccd\b)
 # the default value, which means it will be ignored
 # regExFalse = None
 
