@@ -1,0 +1,15 @@
+2008.01.11 (r51)
+    * fixed error having to do with missing dataPage variable
+    * fixed (important) typo in CommentedConfig
+    * made MakeRss check for filename internally before parsing
+    * change up userFunctions.py, added failedProcedure, made ifTorrent use it
+        (matter of convenience for other functions)
+    * changed references to cookielib from urllib2.cookielib to cookielib
+    * removed rtorrentInit kate backup files
+    * fixed filename and linewidth bugs in ReFormatString
+    * fixed formatting of changelogs
+    * fixed junk characters in CommentConfig
+    * imports minidom, random at the top, makes easier for other modules to use
+        MakeRss (run)
+    * use .strip() to deal with possibly quoted filename in http header
+        (getFilenameFromHTTP)
