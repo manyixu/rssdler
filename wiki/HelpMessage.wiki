@@ -1,5 +1,6 @@
 #labels Featured,Phase-Deploy
 Note: Apologies for the highlighting. Get on Google to allow us [http://code.google.com/p/support/issues/detail?id=44 to disable syntax highlighting].
+Text here may reflect changes made in svn that have not yet been officially released.
 === Help Message ===
 {{{
 RSSDler is a Python based program to automatically grab the link elements of an

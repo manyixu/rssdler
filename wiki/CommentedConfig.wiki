@@ -1,5 +1,6 @@
 #labels Phase-Deploy
-=== Help Message ===
+Text here may reflect changes made in svn that have not yet been officially released.
+=== Commented Config ===
 {{{
 # lines (like this one) starting with # are comments and 
 # will be ignored by the config parser
