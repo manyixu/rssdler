@@ -9,7 +9,7 @@ RSSDler is a Python based program to automatically grab the link elements of an
     rtorrent, it should work with any torrenting program that can read torrent
     files written to a directory. It does not explicitly interface with
     rtorrent in anyway and therefore has no dependency on it. You can find the
-    webpage here: http://libtorrent.rakshasa.no/wiki/UtilsRSSDler
+    webpage here: http://code.google.com/p/rssdler/
 
 Effort has been put into keeping the program from crashing from random errors
     like bad links and such. However, some of the exceptions caught are too
@@ -34,7 +34,8 @@ Command Line Options:
         options
     --comment-config: Prints a commented config file to stdout. (hint:
         rssdler.py --comment-config > myConfigToEdit.txt)
-    --help/-h: print the help message
+    --help/-h: print the short help message (command line options)
+    --full-help/-f: print the complete help message (quite long)
     --run/-r: run according to the configuration file
     --runonce/-o: run only once then exit, otherwise according to the
         configuration file.
@@ -347,6 +348,9 @@ All Rights Reserved.
 Copyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.
 All Rights Reserved.
 
-Contact:  lostnihilist <lostnihilist _at_ gmail _dot_ com> or "lostnihilist" on
+Contact for problems, bugs, and/or feature requests: 
+    http://groups.google.com/group/rssdler or 
+    http://code.google.com/p/rssdler/issues/list or
+Author: lostnihilist <lostnihilist _at_ gmail _dot_ com> or "lostnihilist" on
     #libtorrent@irc.worldforge.org
 }}}
