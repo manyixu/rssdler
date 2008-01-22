@@ -39,7 +39,7 @@ user="user"
 
 # the full path to the filename where you store your rtorrent configuration
 # must keep parentheses around the entire statement, quotations around each config file
-config=("/home/${user}/.rtorrent.rc")
+config=("$(su -c 'echo $HOME' $user)/.rtorrent.rc")
 # Examples:
 # config=("/home/user/.rtorrent.rc")
 # config=("/home/user/.rtorrent.rc" "/mnt/some/drive/.rtorrent2.rc")
@@ -60,7 +60,7 @@ options=("")
 # options=("-n -o import=~/.rtorrent2.rc" "-n -o import=~/rtorrent3.rc")
 
 # default directory for screen, needs to be an absolute path
-base="/home/${user}"
+base=$(su -c 'echo $HOME' $user)
 
 # name of screen session
 srnname="rtorrent"
