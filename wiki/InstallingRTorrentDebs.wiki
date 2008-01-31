@@ -1,7 +1,8 @@
 #labels Phase-Deploy
 How to install rTorrent on a Debian-based distro with my packages:
 
-  * If you have previously installed from source/svn, it would be a good idea to: "make uninstall." If you have previously installed from .deb packages (e.g. dpkg, apt-get, aptitude, or other package manager), you do not need to worry about previous installations.
+  * If you have previously installed from source/svn, it would be a good idea to: "make uninstall." 
+  * If you have previously installed from .deb packages (e.g. dpkg, apt-get, aptitude, or other package manager), you do not need to worry about previous installations.
   * Download the .debs (assuming you want 0.8.0/0.12.0):
     * wget http://rssdler.googlecode.com/files/rtorrent_0.8.0-0_i386.deb
     * wget http://rssdler.googlecode.com/files/libtorrent10_0.12.0-0_i386.deb
