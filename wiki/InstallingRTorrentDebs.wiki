@@ -8,6 +8,9 @@ How to install rTorrent on a Debian-based distro with my packages:
     * wget http://rssdler.googlecode.com/files/libtorrent10_0.12.0-0_i386.deb
   * Use dpkg to install:
     * sudo dpkg -i libtorrent10_0.12.0-0_i386.deb rtorrent_0.8.0-0_i386.deb
+    * you may get an error about missing dependencies. they should be listed out for you. To fix, perform:
+      * sudo apt-get install list of dependencies
+      * repeat the sudo dpkg... command above      
   * (Optional) Cleanup:
     * rm rtorrent_0.8.0-0_i386.deb libtorrent10_0.12.0-0_i386.deb
   * Enjoy
