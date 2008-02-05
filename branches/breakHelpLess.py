@@ -25,7 +25,7 @@ the end.
 import codecs
 import sys
 utfWriter = codecs.getwriter( "utf-8" )
-#sys.stdout = utfWriter( sys.stdout, "replace" )
+sys.stdout = utfWriter( sys.stdout, "replace" )
 
 
 
