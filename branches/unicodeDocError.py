@@ -21,5 +21,10 @@ Traceback (most recent call last):
     pipe.write(text)
 UnicodeEncodeError: 'ascii' codec can't encode character u'deleted to make testcase work' in position 1225: ordinal not in range(128)
 remove the below line to get help(thismodule) to work
-\u2208'
+ℕ
+\u2215
 """
+#\u2208 
+#∈
+#\u2215
+#ℕ
