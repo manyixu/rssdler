@@ -90,15 +90,15 @@ checkcnfg() {
     exit 3
   fi
   for (( i=0 ; i < ${#config[@]} ;  i++ )) ; do
-	if ! [ -r "${config[i]}" ] ; then
-		echo "cannot find readable config ${config[i]}. check that it is there and permissions are appropriate"  | tee -a "$logfile" >&2
-		exit 3
-	fi
-	session=$(getsession "${config[i]}")
-	if ! [ -d "${session}" ] ; then
-		echo "cannot find readable session directory ${session} from config ${config[i]}. check permissions" | tee -a "$logfile" >&2
-		exit 3
-	fi
+    if ! [ -r "${config[i]}" ] ; then
+        echo "cannot find readable config ${config[i]}. check that it is there and permissions are appropriate"  | tee -a "$logfile" >&2
+        exit 3
+    fi
+    session=$(getsession "${config[i]}")
+    if ! [ -d "${session}" ] ; then
+        echo "cannot find readable session directory ${session} from config ${config[i]}. check permissions" | tee -a "$logfile" >&2
+        exit 3
+    fi
   done
 }
 
@@ -117,48 +117,48 @@ d_start() {
 
 d_stop() {
   for (( i=0 ; i < ${#config[@]} ; i++ )) ; do
-	session=$(getsession "${config[i]}")
-	if ! [ -s ${session}/rtorrent.lock ] ; then
-		return
-	fi
-	pid=$(cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g")
-	# make sure the pid doesn't belong to another process
-	if ps -A | grep -sq ${pid}.*rtorrent ; then
-		kill -s INT ${pid}
-	fi
+    session=$(getsession "${config[i]}")
+    if ! [ -s ${session}/rtorrent.lock ] ; then
+        return
+    fi
+    pid=$(cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g")
+    # make sure the pid doesn't belong to another process
+    if ps -A | grep -sq ${pid}.*rtorrent ; then
+        kill -s INT ${pid}
+    fi
   done
 }
 
 getsession() { 
-	session=$(awk '/^[[:space:]]*session[[:space:]]*=[[:space:]]*/{print($3)}' "${config[i]}")
-	#session=${session/#~/`getent passwd ${user}|cut -d: -f6`}
-	echo $session
+    session=$(awk '/^[[:space:]]*session[[:space:]]*=[[:space:]]*/{print($3)}' "$1")
+    #session=${session/#~/`getent passwd ${user}|cut -d: -f6`}
+    echo $session
 }
 
 checkcnfg
 
 case "$1" in
   start)
-	echo -n "Starting $DESC: $NAME"
-	d_start
-	echo "."
-	;;
+    echo -n "Starting $DESC: $NAME"
+    d_start
+    echo "."
+    ;;
   stop)
-	echo -n "Stopping $DESC: $NAME"
-	d_stop
-	echo "."
-	;;
+    echo -n "Stopping $DESC: $NAME"
+    d_stop
+    echo "."
+    ;;
   restart|force-reload)
-	echo -n "Restarting $DESC: $NAME"
-	d_stop
-	sleep 1
-	d_start
-	echo "."
-	;;
+    echo -n "Restarting $DESC: $NAME"
+    d_stop
+    sleep 1
+    d_start
+    echo "."
+    ;;
   *)
-	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
-	exit 1
-	;;
+    echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+    exit 1
+    ;;
 esac
 
 exit 0

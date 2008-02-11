@@ -60,26 +60,26 @@ DAEMON=$NAME
 SCRIPTNAME=/etc/init.d/$NAME
 
 checkcnfg() {
-	exists=0
-	for i in `echo "$PATH" | tr ':' '\n'` ; do
-		if [ -f $i/$NAME ] ; then
-			exists=1
-			break
-		fi
-	done
-	if [ $exists -eq 0 ] ; then
-		echo "cannot find rtorrent binary in PATH $PATH" | tee -a "$logfile" >&2
-		exit 3
-	fi
-	if ! [ -r "${config}" ] ; then 
-		echo "cannot find readable config ${config}. check that it is there and permissions are appropriate" | tee -a "$logfile" >&2
-		exit 3 
-	fi 
-	session=`getsession "$config"` 
-	if ! [ -d "${session}" ] ; then
-		echo "cannot find readable session directory ${session} from config ${config}. check permissions" | tee -a "$logfile" >&2
-		exit 3
-	fi
+    exists=0
+    for i in `echo "$PATH" | tr ':' '\n'` ; do
+        if [ -f $i/$NAME ] ; then
+            exists=1
+            break
+        fi
+    done
+    if [ $exists -eq 0 ] ; then
+        echo "cannot find rtorrent binary in PATH $PATH" | tee -a "$logfile" >&2
+        exit 3
+    fi
+    if ! [ -r "${config}" ] ; then 
+        echo "cannot find readable config ${config}. check that it is there and permissions are appropriate" | tee -a "$logfile" >&2
+        exit 3 
+    fi 
+    session=`getsession "$config"` 
+    if ! [ -d "${session}" ] ; then
+        echo "cannot find readable session directory ${session} from config ${config}. check permissions" | tee -a "$logfile" >&2
+        exit 3
+    fi
 }
 
 d_start() {
@@ -93,45 +93,45 @@ d_start() {
 }
 
 d_stop() {
-	session=`getsession "$config"`
-	if ! [ -s ${session}/rtorrent.lock ] ; then
-		return
-	fi
-	pid=`cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g"`
-	if ps -A | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
-		kill -s INT ${pid}
-	fi
+    session=`getsession "$config"`
+    if ! [ -s ${session}/rtorrent.lock ] ; then
+        return
+    fi
+    pid=`cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g"`
+    if ps -A | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
+        kill -s INT ${pid}
+    fi
 }
 
 getsession() { 
-	session=`awk '/^[[:space:]]*session[[:space:]]*=[[:space:]]*/{print($3)}' "$config"`
-	echo $session
+    session=`awk '/^[[:space:]]*session[[:space:]]*=[[:space:]]*/{print($3)}' "$1"`
+    echo $session
 }
 
 checkcnfg
 
 case "$1" in
   start)
-	echo -n "Starting $DESC: $NAME"
-	d_start
-	echo "."
-	;;
+    echo -n "Starting $DESC: $NAME"
+    d_start
+    echo "."
+    ;;
   stop)
-	echo -n "Stopping $DESC: $NAME"
-	d_stop
-	echo "."
-	;;
+    echo -n "Stopping $DESC: $NAME"
+    d_stop
+    echo "."
+    ;;
   restart|force-reload)
-	echo -n "Restarting $DESC: $NAME"
-	d_stop
-	sleep 1
-	d_start
-	echo "."
-	;;
+    echo -n "Restarting $DESC: $NAME"
+    d_stop
+    sleep 1
+    d_start
+    echo "."
+    ;;
   *)
-	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
-	exit 1
-	;;
+    echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+    exit 1
+    ;;
 esac
 
 exit 0
