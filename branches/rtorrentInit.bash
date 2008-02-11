@@ -130,7 +130,7 @@ d_stop() {
 }
 
 getsession() { 
-    session=$(awk '/^[[:space:]]*session[[:space:]]*=[[:space:]]*/{print($3)}' "$1")
+    session=$(cat "$1" | grep "^[[:space:]]*session[[:space:]]*=" | sed "s/^[[:space:]]*session[[:space:]]*=[[:space:]]*//" )
     #session=${session/#~/`getent passwd ${user}|cut -d: -f6`}
     echo $session
 }
