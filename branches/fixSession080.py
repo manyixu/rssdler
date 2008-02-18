@@ -13,6 +13,7 @@ helpMessage = """Fix the session files from rtorrent 0.7.* to 0.8.0
   python %s <session directory> [<other> <session> <dirs>]
   
   -h prints this message
+  -u will try to undo the previous run of this script. May not work. Some sanity check
   
 """ % sys.argv[0]
 
@@ -142,14 +143,16 @@ def bencode(x):
 # # # # # 
 def parseArgs(args):
   try: 
-    (argp, rest) =  getopt.gnu_getopt(args, ",h", ['help'])
+    (argp, rest) =  getopt.gnu_getopt(args, "hu", ['help'])
   except  getopt.GetoptError:
     print >> sys.stderr, helpMessage
     sys.exit(1)
   if not rest: 
     print helpMessage
     raise SystemExit
-  return rest
+  if ('-u', '') in argp: action == 'undo'
+  else: action == 'do'
+  return rest, action
 
 def checkArgs(directories):
     error=''
@@ -165,7 +168,7 @@ def getTorNames(dir):
   
 def main():
     errors = ''
-    directories =  parseArgs(sys.argv[1:])
+    directories, action =  parseArgs(sys.argv[1:])
     checkArgs(directories)
     for dir in directories:
         tors = getTorNames(dir)
@@ -181,9 +184,11 @@ def main():
                 errors += "file %s appears to not be a session file" % tor
                 errors += os.linesep
                 continue
-            if tord['rtorrent']['directory'].endswith('/'):
-                tord['rtorrent']['directory'] += tord['info']['name'] 
-            else: tord['rtorrent']['directory'] += '/%s' % tord['info']['name']
+	    if action == 'do':
+	      tord['rtorrent']['directory'] = '%s%s%s%s' % (tord['rtorrent']['directory'].rstrip('/'), '/',tord['info']['name'], '/')
+	    elif action =='undo':
+	    	dn, fn = os.path.split(tord['info']['name'].rstrip('/'))
+		if fn == tord['info']['name']: tord['rtorrent']['directory'] = '%s%s' % (dn, '/')
             fdw = open(tor, 'w')
             fdw.write( bencode(tord) )
             fdw.close()
