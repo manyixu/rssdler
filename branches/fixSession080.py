@@ -150,8 +150,8 @@ def parseArgs(args):
   if not rest: 
     print helpMessage
     raise SystemExit
-  if ('-u', '') in argp: action == 'undo'
-  else: action == 'do'
+  if ('-u', '') in argp: action = 'undo'
+  else: action = 'do'
   return rest, action
 
 def checkArgs(directories):
@@ -184,11 +184,11 @@ def main():
                 errors += "file %s appears to not be a session file" % tor
                 errors += os.linesep
                 continue
-	    if action == 'do':
-	      tord['rtorrent']['directory'] = '%s%s%s%s' % (tord['rtorrent']['directory'].rstrip('/'), '/',tord['info']['name'], '/')
-	    elif action =='undo':
-	    	dn, fn = os.path.split(tord['info']['name'].rstrip('/'))
-		if fn == tord['info']['name']: tord['rtorrent']['directory'] = '%s%s' % (dn, '/')
+            if action == 'do':
+              tord['rtorrent']['directory'] = '%s/%s/' % (tord['rtorrent']['directory'].rstrip('/'),tord['info']['name'])
+            elif action =='undo':
+              dn, fn = os.path.split(tord['info']['name'].rstrip('/'))
+            if fn == tord['info']['name']: tord['rtorrent']['directory'] = '%s%s' % (dn, '/')
             fdw = open(tor, 'w')
             fdw.write( bencode(tord) )
             fdw.close()
