@@ -10,5 +10,5 @@ At this point, it is easiest (though not necessary) to store your configuration 
   * cd ..
   * rm -r rssdlersvn
     * before deleting, there are files in there that could prove useful to you. 
-      * rssdler.sh can be used for system startup on nix systems, though not OSX due to the launchd system. 
+      * rssdler.sh can be used for system startup on nix systems, though not OSX due to the launchd system. See StartupOSX .
       * userFunctions.py can be saved in your workingDir (~/.rssdler by default). it contains a number of postDownload and postScanFunctions that people have found useful.
