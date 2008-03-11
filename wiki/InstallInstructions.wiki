@@ -13,7 +13,7 @@ Installing RSSDler is pretty easy, though its ease depends on what platform you 
       * unpack the file to C:\feedparser, or similar, 
       * go to the command line (windows: start, run, cmd <enter>)
       * cd to the directory you unpacked feedparser to (e.g. "cd C:\feedparser")
-      * run python on the setup.py file with the install option: "C:\Python25\python.exe setup install" or similar
+      * run python on the setup.py file with the install option: "C:\Python25\python.exe setup.py install" or similar
   # Mechanize (recommended, but not required):
     * Again, on linux, this is probably as easy as "apt-get install python-mechanize" or similar.
     * "easyinstall mechanize" on the command line
