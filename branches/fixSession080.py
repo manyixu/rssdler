@@ -188,7 +188,8 @@ def main():
               tord['rtorrent']['directory'] = '%s/%s/' % (tord['rtorrent']['directory'].rstrip('/'),tord['info']['name'])
             elif action =='undo':
               dn, fn = os.path.split(tord['info']['name'].rstrip('/'))
-            if fn == tord['info']['name']: tord['rtorrent']['directory'] = '%s%s' % (dn, '/')
+              if fn == tord['info']['name']: 
+                tord['rtorrent']['directory'] = '%s%s' % (dn, '/')
             fdw = open(tor, 'w')
             fdw.write( bencode(tord) )
             fdw.close()
