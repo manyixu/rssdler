@@ -125,7 +125,7 @@ def checkArgs(directories):
   for i, directory in enumerate(reversed(directories)):
     if not os.path.isdir(directory): 
       del directories[ln-i]
-      print >> sys.stderr, '%s is not a directory!' % directory
+      print >> sys.stderr, '%s is not a directory, will skip' % directory
   return directories
 
 def getTorNames(dir):
@@ -148,7 +148,7 @@ def main():
         if fn == tord['info']['name']: 
           tord['rtorrent']['directory'] = '%s%s' % (dn, '/')
       fdw = open(tor, 'w')
-      fdw.write( bencode(tord) )
+      fdw.write(bencode(data=tord))
       fdw.close()
 
 if __name__ == '__main__': main()
