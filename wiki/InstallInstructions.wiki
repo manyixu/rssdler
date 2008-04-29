@@ -18,8 +18,12 @@ Installing RSSDler is pretty easy, though its ease depends on what platform you 
     * Again, on linux, this is probably as easy as "apt-get install python-mechanize" or similar.
     * "easyinstall mechanize" on the command line
     * Otherwise, follow the similar procedure for feedparser for [http://wwwsearch.sourceforge.net/mechanize/#source mechanize]
-  # BitTorrent (not required, will not be used at all when 0.3.5 comes out (r64 and later)):
-    * Linux: "apt-get install bittorrent"
-    * Please report how to get this working on Windows/OSX, the procedure may be substantially different.
 
-Now that that is done, make a directory to keep all your rssdler related files (not necessarily your downloads) in. [http://code.google.com/p/rssdler/downloads/list Download] either the rssdler.py or the rssdler.tar.gz tarball to that directory, and unpack the tarball if that is what you got. RSSDler should be run from that directory. Future versions may be configured to allow a full system install, though that is not currently available. You have now 'installed' all the requirements for RSSDler as well as RSSDler itself. Take a look at the HelpMessage and CommentedConfig
+Now that that is done, (and it only needs to be done once), we install RSSDler:
+  * make a directory in your home folder to keep all your rssdler related files (not necessarily your downloads) in, preferably .rssdler (the defaults assume that is what it will be). 
+  * [http://code.google.com/p/rssdler/downloads/list Download] the rssdler.tar.gz and unpack it: tar xvzf rssdler-X.Y.Z.tar.gz.
+  * cd rssdlerXYZ 
+  * sudo python setup.py install
+  * You have now installed all the requirements for RSSDler as well as RSSDler itself
+  * You can run it with just "rssdler -r" anywhere, and it will find your config file at ~/.rssdler/config.txt, if you installed it there. Otherwise, specify the configuration file with -c.
+  * Take a look at the HelpMessage and CommentedConfig to help in the creation of a suitable configuration file
