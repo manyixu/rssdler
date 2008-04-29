@@ -1,0 +1,22 @@
+2008.04.29
+  * A PostDownloadFunction can now do Episode Advancement! (advanceEpisode)
+    (see function docstring for details on how to call)
+  * added rssdler, to be a 'run script' that will be installed in /usr/bin
+    aka Global Install
+  * Made -h print only the command line options, added -f/--full-help to print the entire help doc
+  * changed default config.txt location to ~/.rssdler/config.txt
+  * changed workingDir default to ~/.rssdler (~ expanded by os.path.expanduser)
+  * changed umask option to be read as octal. CHANGE YOUR CONFIGS IF YOU SET THIS!
+  * added --state/-s option to get whether rssdler is running, returns pid if it is
+  * Safari and Firefox3 cookie support (experimental, please report bugs!)
+  * set-default-config CLI option deprecated
+  * Config.write and .push for sane config writing
+  * made printing of Exception stack human readable
+  * fix choosing ttl over minScanTime in certain circumstances (issue 22)
+  * fix improper sorting of downloads<x> and checktime<x>
+  * fixed .obj extension problem
+  * added dependence on email, sgmllib, htmlentitydefs.entitydefs for improved getFilenameFromHTTP
+  * Changed noSave logic to just add all links in feed to SaveProc.downloads
+  * added check for other instances running before running 
+    (warning: if you are in debug mode, this will be detected as running)
+  * Write daemonInfo always, allows state to be known (for the most part)

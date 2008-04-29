@@ -2,6 +2,7 @@
 Text here may reflect changes made in svn that have not yet been officially released.
 === Commented Config ===
 {{{
+# default config filename is config.txt in ~/.rssdler
 # lines (like this one) starting with # are comments and 
 # will be ignored by the config parser
 # the only required section (though the program won't do much without others)
