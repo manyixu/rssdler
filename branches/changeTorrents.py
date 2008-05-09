@@ -142,43 +142,40 @@ def checkStrings(opts):
   opts.rtorrent_string_key = keys
   return opts
 
+def convertKeyValues(f):
+  filt = []
+  for j in f:
+    if j.lower() != 'none':
+      try: j = int(j)
+      except ValueError: pass
+      filt.append(j)
+  return filt
+  
+def splitFilters(l,ranges=((0,-1),),inds=(-1,)):
+  finalFilters = []
+  for i in range(len(ranges)+len(inds)): finalFilters.append([])
+  for eachFilter in l:
+    eachFilter = tuple(convertKeyValues(eachFilter))
+    for j,k in enumerate(ranges):
+      finalFilters[j].append(eachFilter[slice(*k)])
+    j +=1
+    for i,k in enumerate(inds):
+      finalFilters[i+j].append(eachFilter[k])
+  return finalFilters
+  
 def checkFilters(opts):
-  def convertKeyValues(f):
-    filt = []
-    for j in f:
-      if j.lower() != 'none':
-        try: j = int(j)
-        except ValueError: pass
-        filt.append(j)
-    return filt
-  def splitFilters(l):
-    m = []
-    n = []
-    for i in l:
-      i = tuple(convertKeyValues(i))
-      m.append(i[:-1])
-      n.append(i[-1])
-    return m,n
-  incomplete = ('rtorrent','complete','0')
-  complete = ('rtorrent','complete','1')
-  filters =  set(tuple(x) for x in opts.filter)
   if opts.move_complete: 
-    if incomplete in filters:
-      if not userIntervention(opts, "you specified move complete but filtered for incomplete. Continuing means to remove the incomplete filter"):
-        raise SystemExit(1)
-      filters.remove(incomplete)
-    filters.add(complete)
+    opts.filter.append(('eq','rtorrent','complete','0'))
     opts.move = opts.move_complete
   elif opts.move_incomplete:
-    if complete in filters:
-      if not userIntervention(opts, "you specified move incomplete but filtered for complete. Continuing means to remove the complete filter"):
-        raise SystemExit(1)
-      filters.remove(incomplete)
-    filters.add(complete)
+    opts.filter.append(('eq','rtorrent','complete','1'))
     opts.move = opts.move_incomplete
-  opts.filter, opts.check_posfilter  = splitFilters(filters)
-  opts.filter_out, opts.check_negfilter  = splitFilters(opts.filter_out)
-  opts.printkeys = [tuple(convertKeyValues(x)) for x in opts.printkeys]
+  opts.filter, opts.filter_op, opts.filter_check  = splitFilters(opts.filter,ranges=((1,-1),),inds=(0,-1))
+  if not all(
+    map(hasattr,itertools.repeat(operator, len(opts.filter_op)), opts.filter_op)
+    ):
+    raise SystemExit('illegal operator option')
+  opts.printkeys = splitFilters(opts.printkeys,ranges=((0,None),),inds=())[0]
   opts.set_key,opts.set_value = splitFilters(opts.set_key)
   return opts
 
@@ -198,16 +195,15 @@ b) a good idea! DO IT!."""
   parser.description = description
   parser.add_option('-e', '--extension',default='.torrent',
     help="Set custom file extension. Use lower case! [Default: %default]")
-  parser.add_option('-f','--filter',action='append',default=[],nargs=5,
-    help="""a string of 4 keys/list indices and then a value to compare against.
-If you do not need to go that deep, specify none (case insensitive) and that
-level will be ignored. the value to compare against must be last non-none
-argument. integers will be converted automatically. Filterting is done as an
-AND aka intersection aka all the filters must match (instead of just one).
-Can be specified more than once.""")
-  parser.add_option('-F','--filter-out',action='append',default=[],nargs=5,
-    help="""NOT IMPLEMENTED.like --filter, only matches to these are excluded.
-""")
+  parser.add_option('-f','--filter',action='append',default=[],nargs=6,
+    help="""a string of an operator action, 4 keys/list indices, and then a 
+value to compare against. If you do not need to go that deep, specify none 
+(case insensitive) and that level will be ignored. the last non-none argument
+will be interpreted as the value. integers will be converted automatically. 
+Filterting is done as an AND aka intersection aka all the filters must match 
+(instead of just one). Can be specified more than once. Valid operator actions
+are (though not all are sane, see pydoc for more information): %s""" % 
+    str(tuple(sorted([x for x in dir(operator) if not x.startswith('_')])))[1:-1])
   parser.add_option('-m','--move', default=None,
     help="""Move file(s) associated with the torrents to this directory and
 set rtorrent key 'directory' to this option. does nothing if no rtorrent
@@ -273,10 +269,18 @@ def findTorrents(opts,dirs):
             file.lower().endswith(opts.extension)): yield dir, file
 
 def filterTorrents(opts,bt):
-  return (filterKeys(opts,bt) and filterKeysNeg(opts,bt) and filterTracker(opts,bt))
+  return (filterKeys(opts,bt) and filterTracker(opts,bt))
 
 def filterKeys(opts,bt):
-  return items_getters(bt,opts.filter) == opts.check_posfilter
+  return all( #operators below
+    [ func(items_getter(bt, arg1),arg2) for (func,arg1,arg2) in 
+      zip(
+      map(getattr, itertools.repeat(operator,len(opts.filter_op)), opts.filter_op),
+      opts.filter, 
+      opts.filter_check) #keys, valut to check
+    ]
+  )
+  return items_getters(bt,opts.filter) == opts.filter_check
 
 def filterKeysNeg(opts,bt):
   return all(map(operator.ne, items_getters(bt,opts.filter_out), opts.check_negfilter))
