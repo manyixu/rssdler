@@ -1,21 +1,19 @@
 #!/usr/bin/env python2.5
 
-import codecs
-import copy
-import itertools
+from codecs import getreader, getwriter
+from copy import deepcopy
+from itertools import repeat, starmap
 import operator
 import optparse
 import os
 import shutil
 import sys
-import traceback
+from types import StringType, IntType, LongType, DictType, ListType, \
+  TupleType, BooleanType
 
-from types import StringType, IntType, LongType, DictType, ListType, TupleType
-try: from types import BooleanType
-except ImportError: BooleanType = None
-
-def bencode(data=None,file=None):
-  "returns bencoded data, file may be name or descriptor, data encoded directly"
+def bencode(data=None,file=None,outfile=None):
+  """returns bencoded data, file may be name or descriptor.
+  if outfile specified, data written to file instead of returned."""
   class Bencached(object):
     __slots__ = ['bencoded']
     def __init__(self, s):
@@ -31,25 +29,31 @@ def bencode(data=None,file=None):
   def encode_dict(x,r):
     r.append('d')
     for k, v in sorted(list(x.items())):
-      r.extend((str(len(k)), ':', k))
+      encode_string(k,r) # r.extend((str(len(k)), ':', k))
       encode_func[type(v)](v, r)
     r.append('e')
-  encode_func = {}
-  encode_func[type(Bencached(0))] = encode_bencached
-  encode_func[IntType] = encode_func[LongType] = encode_int
-  encode_func[StringType] = encode_string
-  encode_func[ListType] = encode_func[TupleType] = encode_list
-  encode_func[DictType] = encode_dict
-  if BooleanType: encode_func[BooleanType] = encode_int
-  if file is not None:
+  encode_func = {
+    type(Bencached(0)) : encode_bencached,
+    IntType : encode_int,
+    LongType: encode_int,
+    StringType : encode_string,
+    ListType : encode_list,
+    TupleType : encode_list,
+    DictType : encode_dict,
+    BooleanType : encode_int, }
+  if file != None:
     if hasattr(file, 'read'): data = file.read()
     else: data = open(file,'r').read() # string or binary?
-  if data is None: 
+  if data == None: 
     raise ValueError('must provide file (name or descriptor) or data')
   x = data
   r = []
   encode_func[type(x)](x, r)
-  return ''.join(r)
+  if outfile != None:
+    if hasattr(outfile,'write'): fd = outfile
+    else: fd = open(outfile,'w')
+    fd.write(''.join(r))
+  else: return ''.join(r)
 
 def bdecode(x):
   """This function decodes torrent data. 
@@ -170,11 +174,14 @@ def checkFilters(opts):
   elif opts.move_incomplete:
     opts.filter.append(('eq','rtorrent','complete','1'))
     opts.move = opts.move_incomplete
-  opts.filter, opts.filter_op, opts.filter_check  = splitFilters(opts.filter,ranges=((1,-1),),inds=(0,-1))
+  opts.filter, opts.filter_op, opts.filter_check  = splitFilters(opts.filter,
+    ranges=((1,-1),),inds=(0,-1))
   if not all(
-    map(hasattr,itertools.repeat(operator, len(opts.filter_op)), opts.filter_op)
+    map(hasattr,repeat(operator, len(opts.filter_op)), opts.filter_op)
     ):
     raise SystemExit('illegal operator option')
+  opts.filter_neg, opts.filter_neg_op, opts.filter_neg_check  = splitFilters(
+    opts.filter_neg,ranges=((1,-1),),inds=(0,-1))
   opts.printkeys = splitFilters(opts.printkeys,ranges=((0,None),),inds=())[0]
   opts.set_key,opts.set_value = splitFilters(opts.set_key)
   return opts
@@ -204,6 +211,12 @@ Filterting is done as an AND aka intersection aka all the filters must match
 (instead of just one). Can be specified more than once. Valid operator actions
 are (though not all are sane, see pydoc for more information): %s""" % 
     str(tuple(sorted([x for x in dir(operator) if not x.startswith('_')])))[1:-1])
+  parser.add_option('-F','--filter-neg',action='append',
+    default=[],nargs=6,
+    help="""like filter, with two differences: 1) is that it checks for the
+boolean inverse, e.g. eq would imply not eq, contains would be not contains and
+2) is that it does an OR match, so that ANYTHING that matches means this is
+filtered out.""")
   parser.add_option('-m','--move', default=None,
     help="""Move file(s) associated with the torrents to this directory and
 set rtorrent key 'directory' to this option. does nothing if no rtorrent
@@ -256,9 +269,10 @@ def findTorrents(opts,dirs):
   if opts.recursive:
     for dir in dirs:
       if os.path.isdir(dir):
-        for subdir, _d, files in os.path.walk(dir):
+        for subdir, _d, files in os.walk(dir):
           for file in files:
-            if file.lower().endswith(opts.extension): yield subdir, file
+            if file.lower().endswith(opts.extension):
+              yield subdir, file
       elif not opt.quiet:
         print >> sys.stderr,  m % dir
   else:
@@ -266,24 +280,25 @@ def findTorrents(opts,dirs):
       if os.path.isdir(dir):
         for file in os.listdir(dir):
           if (os.path.isfile(os.path.join(dir,file)) and 
-            file.lower().endswith(opts.extension)): yield dir, file
+            file.lower().endswith(opts.extension)): 
+              yield dir, file
+      elif not opt.quiet:
+        print >> sys.stderr,  m % dir
 
 def filterTorrents(opts,bt):
-  return (filterKeys(opts,bt) and filterTracker(opts,bt))
+  if opts.filter and not filterKeys(opts.filter_op,opts.filter,opts.filter_check,bt):
+    return False
+  if opts.filter_neg and filterKeys(opts.filter_neg_op, opts.filter_neg, opts.filter_neg_check ,bt):
+    return False
+  return filterTracker(opts,bt)
 
-def filterKeys(opts,bt):
+def filterKeys(ops, keys, checks ,bt):
+  "ops,keys,checks need to be same length. if empty, returns False"
   return all( #operators below
-    [ func(items_getter(bt, arg1),arg2) for (func,arg1,arg2) in 
+    func(items_getter(bt, arg1),arg2) for (func,arg1,arg2) in 
       zip(
-      map(getattr, itertools.repeat(operator,len(opts.filter_op)), opts.filter_op),
-      opts.filter, 
-      opts.filter_check) #keys, valut to check
-    ]
-  )
-  return items_getters(bt,opts.filter) == opts.filter_check
-
-def filterKeysNeg(opts,bt):
-  return all(map(operator.ne, items_getters(bt,opts.filter_out), opts.check_negfilter))
+        map(getattr, repeat(operator,len(ops)), ops),
+        keys, checks))
 
 def filterTracker(opts, bt):
   try: return opts.old_tracker in bt['announce']
@@ -307,7 +322,6 @@ def items_setter(item, keys, value):
   return item
 
 def items_setters(obj, keyslist, values):
-  assert len(keyslist) == len(values)
   for keys, value in zip(keyslist, values):
     items_setter(obj, keys, value)
   return obj
@@ -316,7 +330,7 @@ def items_getter(item, keys):
   return fapply(item, map(operator.itemgetter, keys))
 
 def items_getters(item,keyslist):
-  return map(items_getter, itertools.repeat(item,len(keyslist)), keyslist)
+  return map(items_getter, repeat(item,len(keyslist)), keyslist)
 
 def editTorrent(opts, bt):
   old = new = None
@@ -343,22 +357,19 @@ def editTorrent(opts, bt):
         new = '/'.join((opts.move.rstrip('/'),bt['rtorrent']['info']['name']))
   return bt, old, new
 
-def writeTorrent(opts, bt, dir, file, old, new):
+def writeTorrent(opts, bt, file, old, new):
   mwrite = "Failed to write torrent %s"
   mmake = "Failed to create torrent, invalid data got introduced %s"
   m = "\nFailed. Proceeding to the next torrent, no further action on this one"
-  try:
-    fd = open(os.path.join(dir,file),'w')
-    fd.write(bencode(data=bt))
-    fd.close()
+  try: bencode(data=bt, outfile=file)
   except (OSError, IOError):
     if not opts.quiet:
-      print >> sys.stderr, ''.join((mwrite % os.path.join(dir,file), m))
+      print >> sys.stderr, ''.join((mwrite % file, m))
   except (TypeError, ValueError):
     if not opts.quiet:
-      print >> sys.stderr, ''.join((mmake % os.path.join(dir,file),m))
+      print >> sys.stderr, ''.join((mmake % file,m))
   else:
-    if opts.verbose: print('Changed %s' % os.path.join(dir,file))
+    if opts.verbose: print('Changed %s' % file)
     moveData(opts,old,new)
 
 def moveData(opts, old, new):
@@ -379,21 +390,22 @@ def moveData(opts, old, new):
 
 def main(opts, dirs):
   for dir, file in findTorrents(opts,dirs):
-    try: bt = bdecode(os.path.join(dir,file))
+    dfil = os.path.join(dir,file)
+    try: bt = bdecode(dfil)
     except (ValueError, TypeError):
       if not opts.quiet:
-        print >> sys.stderr,"invalid torrent data in %s" %os.path.join(dir,file)
+        print >> sys.stderr,"invalid torrent data in %s" % dfil
     if filterTorrents(opts, bt):
       if opts.printkeys:
-        print os.path.join(dir,file) # bt['info']['name'] # or print file?
+        print dfil # bt['info']['name'] # or print file?
         for i in items_getters(bt, opts.printkeys): print '\t%s' % i
       else:
-        btn, oldfd, newfd = editTorrent(opts, copy.deepcopy(bt))
+        btn, oldfd, newfd = editTorrent(opts, deepcopy(bt))
         if btn != bt:
-          writeTorrent(opts, btn,dir, file, oldfd, newfd)
+          writeTorrent(opts, btn,dfil, oldfd, newfd)
 
 if __name__ == '__main__':
-  sys.stdin = codecs.getreader("utf-8")(sys.stdin,"replace")
-  sys.stdout = codecs.getwriter("utf-8")(sys.stdout,"replace")
-  sys.stderr = codecs.getwriter("utf-8")(sys.stderr,"replace")
+  sys.stdin = getreader("utf-8")(sys.stdin,"replace")
+  sys.stdout = getwriter("utf-8")(sys.stdout,"replace")
+  sys.stderr = getwriter("utf-8")(sys.stderr,"replace")
   main(*parseOpts())
