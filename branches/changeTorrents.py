@@ -2,7 +2,6 @@
 
 from codecs import getreader, getwriter
 from copy import deepcopy
-from itertools import repeat, starmap
 import operator
 import optparse
 import os
@@ -104,6 +103,8 @@ def bdecode(x):
   if l != len(x):  raise ValueError
   return r
 
+# # # # # # # # # # # # # # # #
+# Option Parsing and Sanity Checks
 def userIntervention(opts,message):
   if opts.quiet: 
     return False
@@ -155,18 +156,6 @@ def convertKeyValues(f):
       filt.append(j)
   return filt
   
-def splitFilters(l,ranges=((0,-1),),inds=(-1,)):
-  finalFilters = []
-  for i in range(len(ranges)+len(inds)): finalFilters.append([])
-  for eachFilter in l:
-    eachFilter = tuple(convertKeyValues(eachFilter))
-    for j,k in enumerate(ranges):
-      finalFilters[j].append(eachFilter[slice(*k)])
-    j +=1
-    for i,k in enumerate(inds):
-      finalFilters[i+j].append(eachFilter[k])
-  return finalFilters
-  
 def checkFilters(opts):
   if opts.move_complete: 
     opts.filter.append(('eq','rtorrent','complete','0'))
@@ -174,16 +163,12 @@ def checkFilters(opts):
   elif opts.move_incomplete:
     opts.filter.append(('eq','rtorrent','complete','1'))
     opts.move = opts.move_incomplete
-  opts.filter, opts.filter_op, opts.filter_check  = splitFilters(opts.filter,
-    ranges=((1,-1),),inds=(0,-1))
-  if not all(
-    map(hasattr,repeat(operator, len(opts.filter_op)), opts.filter_op)
-    ):
+  opts.filter = [ convertKeyValues(x) for x in opts.filter ]
+  if not all(hasattr(operator,x[0]) for x in opts.filter):
     raise SystemExit('illegal operator option')
-  opts.filter_neg, opts.filter_neg_op, opts.filter_neg_check  = splitFilters(
-    opts.filter_neg,ranges=((1,-1),),inds=(0,-1))
-  opts.printkeys = splitFilters(opts.printkeys,ranges=((0,None),),inds=())[0]
-  opts.set_key,opts.set_value = splitFilters(opts.set_key)
+  opts.filter_neg = [ convertKeyValues(x) for x in opts.filter_neg ]
+  opts.printkeys = [ convertKeyValues(x) for x in opts.printkeys ]
+  opts.set_key = [ convertKeyValues(x) for x in opts.set_key]
   return opts
 
 def parseOpts():
@@ -207,7 +192,7 @@ b) a good idea! DO IT!."""
 value to compare against. If you do not need to go that deep, specify none 
 (case insensitive) and that level will be ignored. the last non-none argument
 will be interpreted as the value. integers will be converted automatically. 
-Filterting is done as an AND aka intersection aka all the filters must match 
+Filtering is done as an AND aka intersection aka all the filters must match 
 (instead of just one). Can be specified more than once. Valid operator actions
 are (though not all are sane, see pydoc for more information): %s""" % 
     str(tuple(sorted([x for x in dir(operator) if not x.startswith('_')])))[1:-1])
@@ -261,9 +246,10 @@ will be suppressed and success messages will be displayed""")
     raise SystemExit('can only specify one of --move, --move-complete, --move-incomplete')
   opts.rtorrentInteger = rtorrentInteger
   opts.rtorrentString = rtorrentString
-  opts = checkFilters(checkStrings(checkInts(opts)))
-  return opts, dirs
+  return checkFilters(checkStrings(checkInts(opts))), dirs
 
+# # # # # # # # # # # # # # # #
+# Filtering
 def findTorrents(opts,dirs):
   m = "dir specified is not a dir %s, skipping"
   if opts.recursive:
@@ -286,24 +272,22 @@ def findTorrents(opts,dirs):
         print >> sys.stderr,  m % dir
 
 def filterTorrents(opts,bt):
-  if opts.filter and not filterKeys(opts.filter_op,opts.filter,opts.filter_check,bt):
+  if opts.filter and not filterKeys(opts.filter, bt):
     return False
-  if opts.filter_neg and filterKeys(opts.filter_neg_op, opts.filter_neg, opts.filter_neg_check ,bt):
+  if opts.filter_neg and filterKeys(opts.filter_neg, bt):
     return False
   return filterTracker(opts,bt)
 
-def filterKeys(ops, keys, checks ,bt):
+def filterKeys(ops,bt):
   "ops,keys,checks need to be same length. if empty, returns False"
-  return all( #operators below
-    func(items_getter(bt, arg1),arg2) for (func,arg1,arg2) in 
-      zip(
-        map(getattr, repeat(operator,len(ops)), ops),
-        keys, checks))
+  return all( getattr(operator,x[0])(items_getter(bt,x[1:-1]), x[-1]) for x in ops )
 
 def filterTracker(opts, bt):
   try: return opts.old_tracker in bt['announce']
   except TypeError: return True
 
+# # # # # # # # # # # # # # # #
+# GETTERS, SETTERS
 def fapply(object, funcs, exceptions=None, failObj=None):
   """apply iterable of callables to the given object,
   with each function acting on the output of the other until the list is exhausted
@@ -330,15 +314,19 @@ def items_getter(item, keys):
   return fapply(item, map(operator.itemgetter, keys))
 
 def items_getters(item,keyslist):
-  return map(items_getter, repeat(item,len(keyslist)), keyslist)
+  return [ items_getter(item, keys) for keys in keyslist ]
+  #map(items_getter, repeat(item,len(keyslist)), keyslist)
 
+# # # # # # # # # # # # # # # #
+# Substance
 def editTorrent(opts, bt):
   old = new = None
   if opts.tracker: operator.setitem(bt,'announce',opts.tracker)
-  try: items_setters(bt,opts.set_key,opts.set_value)
-  except (KeyError, IndexError):
-    if not userIntervention(opts, 'could not set some attributes for %s' % bt['info']['name']):
-      return bt, old, new
+  for keys in opts.set_key: 
+    try: items_setter(bt,keys[:-1],keys[-1])
+    except (KeyError, IndexError):
+      if not userIntervention(opts, 'could not set some attributes for %s' % bt['info']['name']):
+        return bt, old, new
   if 'rtorrent' in bt:
     try: items_setters(bt, 
       opts.rtorrent_integer_key + opts.rtorrent_string_key,
@@ -385,8 +373,8 @@ def moveData(opts, old, new):
       except (OSError, IOError):
         if not opts.quiet:
           print >> sys.stderr, "Failed to move files from %s to %s" % (old,new)
-        else:
-          if opts.verbose: print 'Moved %s to %s' % (old,new)
+      else:
+        if opts.verbose: print 'Moved %s to %s' % (old,new)
 
 def main(opts, dirs):
   for dir, file in findTorrents(opts,dirs):
@@ -395,9 +383,10 @@ def main(opts, dirs):
     except (ValueError, TypeError):
       if not opts.quiet:
         print >> sys.stderr,"invalid torrent data in %s" % dfil
+      continue
     if filterTorrents(opts, bt):
       if opts.printkeys:
-        print dfil # bt['info']['name'] # or print file?
+        print dfil
         for i in items_getters(bt, opts.printkeys): print '\t%s' % i
       else:
         btn, oldfd, newfd = editTorrent(opts, deepcopy(bt))
