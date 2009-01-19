@@ -18,6 +18,9 @@ helpMessage = """Fix the session files from rtorrent 0.7.* to 0.8.0
   
   -h prints this message
   -u will try to undo the previous run of this script. May not work. Some sanity check
+
+(C) 2008, Distributed under the GNU General Public License v2 by lostnihilist. 
+For full terms of this license, see: http://www.gnu.org/licenses/gpl-2.0.html
   
 """ % sys.argv[0]
 
