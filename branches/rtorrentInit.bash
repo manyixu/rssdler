@@ -1,4 +1,15 @@
 #!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          rtorrent
+# Required-Start:    $network $named $remote_fs $syslog
+# Required-Stop:     $network $named $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start rtorrent at boot time
+# Description:       Enable torrenting.
+### END INIT INFO
+
 #############
 ###<Notes>###
 #############
@@ -124,7 +135,7 @@ d_stop() {
     pid=$(cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g")
     # make sure the pid doesn't belong to another process
     if ps -A | grep -sq ${pid}.*rtorrent ; then
-        kill -s INT ${pid}
+        kill -s $1 ${pid}
     fi
   done
 }
@@ -145,15 +156,25 @@ case "$1" in
     ;;
   stop)
     echo -n "Stopping $DESC: $NAME"
-    d_stop
+    d_stop INT
     echo "."
     ;;
-  restart|force-reload)
+  restart)
     echo -n "Restarting $DESC: $NAME"
-    d_stop
+    d_stop INT
     sleep 1
     d_start
     echo "."
+    ;;
+  force-reload)
+    echo -n "Force Restarting $DESC: $NAME"
+    d_stop KILL
+    sleep 1
+    d_start
+    echo "."
+    ;;
+  status)
+    echo "this is a meaningless status message"
     ;;
   *)
     echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
