@@ -89,6 +89,7 @@ Run with --comment-config to see what a configuration file would look like.
 
 
 Global Options:
+    
     downloadDir: [Recommended] A string option. Default is workingDir. 
         Set to a directory where downloaded files will go.
     workingDir: [Optional] A string option. Default is ${HOME}/.rssdler.
@@ -110,10 +111,11 @@ Global Options:
         that has cookie data for whatever site(s) you have set that require it.
     cookieType: [Optional] A string option. Default 'MozillaCookieJar.' 
         Possible values (case sensitive): 'MozillaCookieJar', 'LWPCookieJar', 
-        'MSIECookieJar', 'Firefox3', 'Safari'. Only mechanize supports MSIECookieJar.
+        'MSIECookieJar', 'Firefox3', 'Safari', 'KDE'. Only mechanize supports MSIECookieJar.
         Program will exit with error if you try to use urllib and MSIECookieJar.
-        Firefox3 requires that you use Python 2.5+ and support is experimental.
-        Safari support requires xml.dom.minidom and support is experimental
+        Firefox3 requires that you use Python 2.5+, specifically sqlite3 must be
+          available.
+        Safari requires xml.dom.minidom and is experimental
     scanMins: [Optional] An integer option. Default 15. Values are in minutes. 
         The number of minutes between scans.
         If a feed uses the <ttl> tag, it will be respected. 
@@ -152,7 +154,7 @@ Global Options:
     saveFile: [Optional] A string option. Default savedstate.dat. History data.
     lockPort: [Optional] An integer option. Default 8023. Port to lock saveFile
     daemonInfo: [Optional] A string. Default daemon.info. PID written here.
-    umask: [Optional] An integer option. Default 63 aka 077 in octal
+    umask: [Optional] An integer option. Default 077 in octal.
         Sets umask for file creation. PRIOR TO 0.4.0 this was read as BASE10.
         It is now read as octal like any sane program would.
         Do not edit this if you do not know what it does. 
@@ -202,6 +204,7 @@ Thread options:
         no exceptions are caught. Check docstrings (or source) of 
         userFunctHandling and callUserFunction to see reserved words/access to 
         RSSDler functions/classes/methods.
+    preScanFunction: [Optional] See postScanFunction, only before scan.
     postScanFunction: [Optional] A string option. Default None. 
         The name of a function, stored in userFunctions.py. Any changes to this 
         requires a restart of RSSDler. Calls the named function after a scan of 
@@ -261,16 +264,16 @@ Thread options:
 Most options can be altered during runtime (i.e. by editing then saving the
     config file. Those that require a restart include: 
     - config file location
-    - cookie file type/location ; extra cookie data in the file 
     - verbosity/logging level ; log file location
     - daemonInfo
-    - umask
+    - debug
+    - changes to userFunctions
 
 A Netscape cookies file must have the proper header that looks like this:
 # HTTP Cookie File
 # http://www.netscape.com/newsref/std/cookie_spec.html
 # This is a generated file!  Do not edit.
-# To delete cookies, use the Cookie Manager.
+
 
 cookiedata ....
 

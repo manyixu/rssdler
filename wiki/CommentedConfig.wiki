@@ -14,7 +14,7 @@ Text here may reflect changes made in svn that have not yet been officially rele
 downloadDir = /home/user/downloads
 
 # makes this the 'working directory' of RSSDler. anytime you specify a filename
-# without an absolute path, it will be relative to this 
+# without an absolute path, it will be relative to this, this s the default:
 workingDir = /home/user/.rssdler
 
 # if a file is smaller than this, it will not be downloaded. 
@@ -43,8 +43,8 @@ cookieFile = /home/user/.mozilla/firefox/user/cookies.txt
 # type of cookie file to be found at above location. default MozillaCookieJar
 cookieType = MozillaCookieJar
 # other possible types are:
-# cookieType = LWPCookieJar
-# only works if urllib = False
+# LWPCookieJar, Safari, Firefox3, KDE
+# only works if urllib = False and mechanize is installed
 # cookieType = MSIECookieJar
 
 #how long to wait between checking feeds (in minutes). Default 15.
@@ -58,6 +58,7 @@ runOnce = True
 
 # set to true to avoid having to install mechanize. 
 # side effects described in help. Default False.
+# will fallback to a sane value if mechanize is not installed
 urllib = True
 
 # the rest of the global options are described in the help,
